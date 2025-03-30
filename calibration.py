@@ -72,9 +72,14 @@ pickle.dump(dist, open( "dist.pkl", "wb" ))
 
 img = cv.imread('cali5.png')
 h,  w = img.shape[:2]
-newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(cameraMatrix, dist, (w,h), 1, (w,h))
-
-
+newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(
+    cameraMatrix,
+    dist,
+    frameSize,
+    1.0,  # alpha=1.0 для сохранения максимальной области видимости
+    frameSize,
+    centerPrincipalPoint=True  # Центрирование оптического центра
+)
 
 # Undistort
 dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
