@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Инициализация камеры
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 while True:
     # Получаем кадр с камеры

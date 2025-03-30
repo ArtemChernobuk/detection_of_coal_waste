@@ -56,7 +56,7 @@ cv2.createTrackbar('S(green)', 'Settings', lower_green_s, 255, update_lower_gree
 cv2.createTrackbar('V(green)', 'Settings', lower_green_v, 255, update_lower_green_v)
 
 # Инициализация камеры
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 while True:
     # Получаем кадр с камеры
