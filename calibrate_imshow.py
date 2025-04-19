@@ -50,14 +50,14 @@ while True:
 
     # Определяем диапазоны цветов
     # Черный цвет имеет два диапазона в HSV пространстве
-    lower_black = np.array([0, 0, 50])
-    upper_black = np.array([180, 30, 220])
+    lower_grey = np.array([0, 0, 50])
+    upper_grey = np.array([180, 30, 200])
 
-    mask_black = cv2.inRange(hsv, lower_black, upper_black)
+    mask_grey = cv2.inRange(hsv, lower_grey, upper_grey)
 
-    contours_black = cv2.findContours(mask_black, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours_grey = cv2.findContours(mask_grey, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-    for contour in contours_black:
+    for contour in contours_grey:
         if cv2.contourArea(contour) > 1000:  # Фильтруем шум
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(cropped_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
@@ -66,12 +66,21 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         (0, 0, 255), 2)
 
+    print(cropped_image.shape)
+    sections_col = 5
+    sections = [cropped_image.shape[1] / sections_col]
+    for i in range(sections_col):
+        sections.append(sections[-1] + (cropped_image.shape[1] / sections_col))
+    print(sections)
 
+
+    for i in sections:
+        cv2.line(cropped_image, (int(i), 0), (int(i), 85), (0, 0, 255), 5)
     # Вывод исходного и скорректированного изображения
     cv2.imshow('Cropped Image', cropped_image)
     cv2.imshow("Original", frame)
     cv2.imshow("Undistorted", undistorted_cropped)
-    cv2.imshow("Black", mask_black)
+    cv2.imshow("Black", mask_grey)
 
     # Выход по нажатию 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
