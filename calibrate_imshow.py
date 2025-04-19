@@ -19,6 +19,7 @@ if not ret:
     exit()
 
 h, w = frame.shape[:2]
+print(h, w)
 frameSize = (w, h)
 
 # Вычисляем оптимальную новую матрицу камеры и ROI
@@ -43,6 +44,10 @@ while True:
     # Обрезка по ROI (если нужно)
     x, y, w, h = roi
     undistorted_cropped = undistorted[y:y+h, x:x+w]
+
+    cropped_image = undistorted_cropped[0:150, 0:640]
+
+    cv2.imshow('Cropped Image', cropped_image)
 
     # Вывод исходного и скорректированного изображения
     cv2.imshow("Original", frame)
