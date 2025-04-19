@@ -1,6 +1,6 @@
 import cv2
 import pickle
-
+import numpy as np
 # Загрузка параметров калибровки
 with open("calibration.pkl", "rb") as f:
     cameraMatrix, dist = pickle.load(f)
@@ -44,14 +44,34 @@ while True:
     # Обрезка по ROI (если нужно)
     x, y, w, h = roi
     undistorted_cropped = undistorted[y:y+h, x:x+w]
-
     cropped_image = undistorted_cropped[0:85, 110:400]
 
-    cv2.imshow('Cropped Image', cropped_image)
+    hsv = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2HSV)
+
+    # Определяем диапазоны цветов
+    # Черный цвет имеет два диапазона в HSV пространстве
+    lower_black = np.array([0, 0, 50])
+    upper_black = np.array([180, 30, 220])
+
+    mask_black = cv2.inRange(hsv, lower_black, upper_black)
+
+    contours_black = cv2.findContours(mask_black, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+
+    for contour in contours_black:
+        if cv2.contourArea(contour) > 1000:  # Фильтруем шум
+            x, y, w, h = cv2.boundingRect(contour)
+            cv2.rectangle(cropped_image, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+            cv2.putText(frame, "red", (x, y - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                        (0, 0, 255), 2)
+
 
     # Вывод исходного и скорректированного изображения
+    cv2.imshow('Cropped Image', cropped_image)
     cv2.imshow("Original", frame)
     cv2.imshow("Undistorted", undistorted_cropped)
+    cv2.imshow("Black", mask_black)
 
     # Выход по нажатию 'q'
     if cv2.waitKey(1) & 0xFF == ord('q'):
