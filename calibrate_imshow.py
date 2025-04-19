@@ -45,7 +45,7 @@ while True:
     x, y, w, h = roi
     undistorted_cropped = undistorted[y:y+h, x:x+w]
 
-    cropped_image = undistorted_cropped[0:100, 100:540]
+    cropped_image = undistorted_cropped[0:85, 100:460]
 
     cv2.imshow('Cropped Image', cropped_image)
 
